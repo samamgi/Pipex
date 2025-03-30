@@ -1,10 +1,7 @@
- 
-\
 a.out
 execv
 execv.c
 fd
-fds
 fdsfsd.txt
 gdfgd
 libft
@@ -14,8 +11,9 @@ pipex
 pipex.c
 pipex.h
 pipex.o
-README.md
 salut.txt
 sfas
+tesortie.txt
 testsortie2.txt
+testsortie.txt
 test.txt
