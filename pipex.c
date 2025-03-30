@@ -6,7 +6,7 @@
 /*   By: ssadi-ou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 23:54:49 by ssadi-ou          #+#    #+#             */
-/*   Updated: 2025/03/28 08:06:39 by ssadi-ou         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:33:37 by ssadi-ou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,15 @@ int    check_commande(char *cmd, char **env)
         char    **argv;
         int     i;
 
-        if (!cmd || (cmd && ft_strlen(cmd) <= 0))
+        path = getpath(env);
+	if (!cmd || (cmd && ft_strlen(cmd) <= 0))
         {
                 //free(cmd);
                 //freesplit(env);
                 //ft_putstr_fd("command not found\n", 2);
                 return (-1);
         }
-	if (ft_strnstr(cmd, "./", 2))
+	if ((ft_strnstr(cmd, "./", 2)) || !path | !env)
 	{
 		if (access(cmd, F_OK) == 0)
 			return (1);
@@ -78,7 +79,7 @@ int    check_commande(char *cmd, char **env)
                      return (-1);
         }
 	argv = ft_split(cmd, ' ');
-        path = getpath(env);
+        //path = getpath(env);
         slash = ft_strjoin("/", argv[0]);
         split_path = ft_split(path, ':');
         if (!split_path)
@@ -124,7 +125,41 @@ int    commande(char *cmd, char **env)
         int     i;  
 
         argv = ft_split(cmd, ' ');
-        path = getpath(env);
+	path = getpath(env);
+	if (!path)
+	{
+		if (ft_strnstr(cmd, "./", 2))
+		{
+			if (access(cmd, F_OK) == 0)
+             		{
+                     		execve(cmd, argv, NULL);
+                     		freesplit(argv);
+                     		return (1);
+             		}
+             		else
+             		{
+				freesplit(argv);
+				ft_putstr_fd("command not found\n", 2);
+                     		return (-1);
+             		}
+        	}
+        	if (cmd[0] == '/')
+        	{
+             		if (access(cmd, F_OK) == 0)
+             		{
+                     		execve(cmd, argv, NULL);
+                     		freesplit(argv);
+                     		return (1);
+             		}
+             		else
+             		{
+                     		freesplit(argv);
+                     		ft_putstr_fd("command not found\n", 2);
+                     		return (-1);
+             		}
+        	}
+	}
+        //path = getpath(env);
         slash = ft_strjoin("/", argv[0]);
         split_path = ft_split(path, ':');
         path = NULL;
@@ -200,10 +235,8 @@ int    commande(char *cmd, char **env)
                 i++;
         }   
         free(slash);
-        //free(path);
         freesplit(split_path);
         freesplit(argv);
-        //ft_putstr_fd("command not found\n", 2); 
         return (-1);
 }
 
@@ -255,10 +288,10 @@ int     main(int ac, char **av, char **env)
 				close(fd1);
 			if (fd2 != -1)
 				close(fd2);*/
-			printf("%i\n", STDIN_FILENO);
+			//printf("%i\n", STDIN_FILENO);
 			close(pipefd[0]);
 			fd1 = open(av[1], O_RDONLY, 0644);
-			printf("%i\n", fd1);
+			//printf("%i\n", fd1);
 			if (fd1 == -1)
 			{
 				close(pipefd[1]);
@@ -320,7 +353,7 @@ int     main(int ac, char **av, char **env)
 			close(pipefd[0]);
                         if (check_commande(av[3], env) == -1)
                         {
-                                err = ft_strjoin("Command not found: ", av[2]);
+                                err = ft_strjoin("Command not found: ", av[3]);
                                 ft_putstr_fd(err, 2);
                                 ft_putchar_fd('\n', 2);
                                 free(err);
