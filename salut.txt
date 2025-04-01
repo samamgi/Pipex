@@ -1,4 +1,0 @@
-Salut tout le monde
-ça va ?
-EOF
-bonjour

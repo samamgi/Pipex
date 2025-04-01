@@ -6,7 +6,7 @@
 #    By: ssadi-ou <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 17:45:24 by ssadi-ou          #+#    #+#              #
-#    Updated: 2024/11/14 17:47:03 by ssadi-ou         ###   ########.fr        #
+#    Updated: 2025/04/02 01:07:29 by ssadi-ou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra -I ./
 
-.c.o:
+%.o: %.c libft.h
 		${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
 ${LIB}:	${OBJS}
